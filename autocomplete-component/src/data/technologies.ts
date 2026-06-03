@@ -1,0 +1,28 @@
+
+export let technologies = [
+  "HTML",
+  "CSS",
+  "JavaScript",
+  "TypeScript",
+  "React",
+  "Vue",
+  "Angular",
+  "Node.js",
+  "Express",
+  "Next.js",
+  "Vite",
+  "Redux",
+  "Tailwind CSS",
+  "Sass",
+  "GraphQL",
+  "REST API",
+  "Jest",
+  "Cypress",
+  "Playwright",
+  "Git",
+  "Docker",
+  "MongoDB",
+  "PostgreSQL",
+  "Firebase",
+  "Webpack"
+]
