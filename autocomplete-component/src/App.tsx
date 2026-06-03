@@ -1,5 +1,6 @@
 import Autocomplete from './components/Autocomplete';
 import backgroundImage from "./assets/building.jpg";
+import { technologies } from './data/technologies';
 
 function App() {
   return (
@@ -11,7 +12,11 @@ function App() {
         style={{ backgroundImage: `url(${backgroundImage})` }}
       />
       <div className="absolute inset-0 bg-white/30" />
-        <Autocomplete />
+        <Autocomplete
+          suggestions={technologies}
+          getSuggestionLabel={(suggestion) => suggestion}
+          getSuggestionId={(suggestion) => suggestion}
+        />
     </main>
   )
 }
