@@ -1,4 +1,4 @@
-[
+export let tags = [
   {
     "id": "frontend-developer",
     "label": "Frontend Developer"
