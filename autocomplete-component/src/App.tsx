@@ -1,6 +1,8 @@
 import Autocomplete from './components/Autocomplete';
 import backgroundImage from "./assets/building.jpg";
 import { technologies } from './data/technologies';
+// import { addresses } from "./data/addresses";
+// import { tags } from "./data/tags";
 
 function App() {
   return (

@@ -1,14 +1,18 @@
-import React from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
-const ChosenTile: React.FC<{textTile: string}> = (props) => {
+type ChosenTileProps = {
+    textTile: string,
+    onRemove: ()=>void
+}
+
+function ChosenTile({textTile, onRemove}: ChosenTileProps) {
     return (
         <div>
-            <button>
+            <button onClick={onRemove}>
                 <FontAwesomeIcon icon={faXmark} />
             </button>
-            <p>{props.textTile}</p>
+            <p>{textTile}</p>
         </div>
     );
 }
