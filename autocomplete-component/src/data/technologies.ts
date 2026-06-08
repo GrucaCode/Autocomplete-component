@@ -1,5 +1,5 @@
 
-export let technologies = [
+export const technologies = [
   "HTML",
   "CSS",
   "JavaScript",

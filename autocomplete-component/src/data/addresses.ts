@@ -1,4 +1,4 @@
-export let addresses = [
+export const addresses = [
   {
     id: "1",
     street: "Bronowicka 1",
