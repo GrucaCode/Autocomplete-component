@@ -196,15 +196,18 @@ function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId, cre
         );
     };
 
+    const listboxId = "autocomplete-listbox";
+    const inputId = "autocomplete-input";
+
     return (
         <div
             ref={autocompleteRef} 
-            className="relative bg-gray-700 flex flex-col min-w-[100px] w-3/4 max-w-[600px] rounded-sm px-10 py-10 shadow-2xl font-montserrat"
+            className="w-3/4 min-w-[100px] max-w-[600px] relative bg-white flex flex-col rounded-sm px-10 py-10 shadow-2xl font-montserrat"
         >
-            <h2 className="pb-5 text-white font-bold text-2xl">Choose options:</h2>
-            <div className="w-full bg-gray-600 flex gap-2 flex-wrap items-center rounded-t-sm">
+            <label htmlFor={inputId} className="pb-5 text-black font-bold text-2xl">Choose options</label>
+            <div className="w-full bg-indigo-200 shadow-2xl flex gap-2 flex-wrap items-center rounded-t-sm px-2 py-2">
                 {selectedSuggestions.length > 0 && (
-                    <div className="flex flex-wrap">
+                    <div className="flex flex-wrap gap-2">
                         {selectedSuggestions.map((suggestion) => (
                             <ChosenTile
                                 key={getSuggestionId(suggestion)}
@@ -214,22 +217,31 @@ function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId, cre
                         ))}
                     </div>
                 )}
-                <input 
+                <input
+                    id={inputId}
                     type="text"
                     value={query} 
                     placeholder="Write here"
                     onFocus={handleInputFocus} 
                     onChange={handleInputChange} 
                     onKeyDown={handleInputKeyDown}
-                    className="flex grow px-5 py-4 placeholder-gray-300 text-white"
+                    role="combobox"
+                    aria-expanded={isDropdownOpen}
+                    aria-autocomplete="list"
+                    aria-activedescendant={
+                        currentSuggestionIndex !== null && activeSuggestions[currentSuggestionIndex]
+                            ? `suggestion-${getSuggestionId(activeSuggestions[currentSuggestionIndex])}`
+                            : undefined
+                        }
+                    className="flex grow px-5 py-4 placeholder-black text-black"
                 />
                 {canCreateSuggestion && (
                     <button
                         type="button"
                         onClick={handleCreateSuggestion}
-                        className="text-black rounded-md bg-green-700 py-2 px-5 mr-2"
+                        className="text-black rounded-xl bg-white shadow-xl/10 hover:bg-black hover:text-white py-2 px-5"
                     >
-                        ADD
+                        Add
                     </button>
                 )}
             </div>
@@ -245,6 +257,7 @@ function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId, cre
                         ? getSuggestionId(activeSuggestions[currentSuggestionIndex])
                         : null
                 }
+                listboxId={listboxId}
               />
             )}
         </div>

@@ -4,7 +4,8 @@ type SuggestionsDropdownProps<T> = {
     getSuggestionId: (suggestion: T) => string;
     selectedSuggestionIds: string[];
     onSelect: (suggestion: T) => void;
-    currentSuggestionId: string | null;
+    currentSuggestionId?: string | null;
+    listboxId: string;
 };
 
 function SuggestionsDropdown<T>({ 
@@ -13,26 +14,32 @@ function SuggestionsDropdown<T>({
     getSuggestionId,
     selectedSuggestionIds,
     onSelect,
-    currentSuggestionId
+    currentSuggestionId,
+    listboxId
 }: SuggestionsDropdownProps<T>) {
 
     if (suggestions.length === 0) {
         return (
-            <p className="bg-white mb-2 px-5 py-2">
+            <p role="status" aria-live="polite" className="bg-white mb-2 px-5 py-2">
                 No matching options
             </p>
         );
     };
 
     return (
-        <ul className="bg-white h-auto max-h-50 overflow-auto rounded-b-sm">
+        <ul id={listboxId} role="listbox" className="bg-white shadow-xl h-auto max-h-50 overflow-auto rounded-b-sm">
             {suggestions.map((suggestion) => {
                 const suggestionId = getSuggestionId(suggestion);
                 const isAlreadySelected = selectedSuggestionIds.includes(suggestionId);
                 const isCurrent = currentSuggestionId === suggestionId;
                 
                 return(
-                    <li key={suggestionId}>
+                    <li 
+                        id={`suggestion-${suggestionId}`}
+                        key={suggestionId}
+                        role="option"
+                        aria-selected={isCurrent}
+                    >
                         <button 
                             type="button"
                             disabled={isAlreadySelected}
@@ -41,8 +48,8 @@ function SuggestionsDropdown<T>({
                                 isAlreadySelected
                                     ? "text-gray-400 cursor-not-allowed w-full text-left px-5 py-2"
                                     : isCurrent
-                                        ? "bg-orange-100 cursor-pointer text-left w-full px-5 py-1 disabled:hover:bg-orange-100"
-                                        : "hover:bg-orange-100 cursor-pointer text-left w-full px-5 py-1"
+                                        ? "hover:bg-gray-200 text-left w-full px-5 py-1 disabled:hover:bg-gray-200"
+                                        : "hover:bg-gray-200 cursor-pointer text-left w-full px-5 py-1"
                             }
                         >
                         {getSuggestionLabel(suggestion)}</button>
