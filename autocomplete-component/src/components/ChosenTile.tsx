@@ -9,12 +9,12 @@ type ChosenTileProps = {
 
 function ChosenTile({textTile, onRemove}: ChosenTileProps) {
     return (
-        <div className="flex flex-row gap-2 items-center bg-black text-white rounded-xl px-4 py-2">
+        <div className="flex flex-row  items-center gap-2 px-4 py-2 text-white bg-black rounded-xl">
             <button 
                 type="button"
                 onClick={onRemove}
                 aria-label={`Remove ${textTile}`}
-                className="cursor-pointer flex text-white content-center items-center"
+                className="flex content-center items-center text-white cursor-pointer"
             >
                 <FontAwesomeIcon icon={faXmark}/>
             </button>

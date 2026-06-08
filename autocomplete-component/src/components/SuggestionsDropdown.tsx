@@ -20,14 +20,14 @@ function SuggestionsDropdown<T>({
 
     if (suggestions.length === 0) {
         return (
-            <p role="status" aria-live="polite" className="bg-white mb-2 px-5 py-2">
+            <p role="status" aria-live="polite" className="mb-2 px-5 py-2 bg-white">
                 No matching options
             </p>
         );
     };
 
     return (
-        <ul id={listboxId} role="listbox" className="bg-white shadow-xl h-auto max-h-50 overflow-auto rounded-b-sm">
+        <ul id={listboxId} role="listbox" className="h-auto max-h-50 overflow-auto bg-white rounded-b-sm shadow-xl">
             {suggestions.map((suggestion) => {
                 const suggestionId = getSuggestionId(suggestion);
                 const isAlreadySelected = selectedSuggestionIds.includes(suggestionId);
@@ -46,10 +46,10 @@ function SuggestionsDropdown<T>({
                             onClick={()=>onSelect(suggestion)}
                             className={
                                 isAlreadySelected
-                                    ? "text-gray-400 cursor-not-allowed w-full text-left px-5 py-2"
+                                    ? "w-full px-5 py-2 text-gray-400 text-left cursor-not-allowed"
                                     : isCurrent
-                                        ? "hover:bg-gray-200 text-left w-full px-5 py-1 disabled:hover:bg-gray-200"
-                                        : "hover:bg-gray-200 cursor-pointer text-left w-full px-5 py-1"
+                                        ? "w-full px-5 py-1 text-left hover:bg-gray-200 disabled:hover:bg-gray-200"
+                                        : "w-full px-5 py-1 text-left hover:bg-gray-200 cursor-pointer  "
                             }
                         >
                         {getSuggestionLabel(suggestion)}</button>

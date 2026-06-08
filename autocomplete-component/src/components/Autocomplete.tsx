@@ -116,7 +116,6 @@ function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId, cre
                 ? activeSuggestions.length - 1
                 : previousIndex - 1;
             });
-
             return;
         }
 
@@ -165,7 +164,6 @@ function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId, cre
         setQuery("");
         setIsDropdownOpen(false);
         setCurrentSuggestionIndex(null);
-        
     }
 
     const handleSelect = (suggestion: T) => {
@@ -202,10 +200,10 @@ function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId, cre
     return (
         <div
             ref={autocompleteRef} 
-            className="w-3/4 min-w-[100px] max-w-[600px] relative bg-white flex flex-col rounded-sm px-10 py-10 shadow-2xl font-montserrat"
+            className="w-3/4 min-w-[100px] max-w-[600px] relative flex flex-col px-10 py-10 font-montserrat bg-white rounded-sm shadow-2xl"
         >
-            <label htmlFor={inputId} className="pb-5 text-black font-bold text-2xl">Choose options</label>
-            <div className="w-full bg-indigo-200 shadow-2xl flex gap-2 flex-wrap items-center rounded-t-sm px-2 py-2">
+            <label htmlFor={inputId} className="pb-5 font-bold text-2xl text-black">Choose options</label>
+            <div className="w-full flex flex-wrap items-center gap-2 px-2 py-2 bg-indigo-200  rounded-t-sm shadow-2xl">
                 {selectedSuggestions.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                         {selectedSuggestions.map((suggestion) => (
@@ -233,13 +231,13 @@ function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId, cre
                             ? `suggestion-${getSuggestionId(activeSuggestions[currentSuggestionIndex])}`
                             : undefined
                         }
-                    className="flex grow px-5 py-4 placeholder-black text-black"
+                    className="flex grow px-5 py-4 text-black placeholder-black"
                 />
                 {canCreateSuggestion && (
                     <button
                         type="button"
                         onClick={handleCreateSuggestion}
-                        className="text-black rounded-xl bg-white shadow-xl/10 hover:bg-black hover:text-white py-2 px-5"
+                        className="text-black py-2 px-5 bg-white hover:bg-black hover:text-white rounded-xl shadow-xl/10 "
                     >
                         Add
                     </button>
