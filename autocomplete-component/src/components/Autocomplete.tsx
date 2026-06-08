@@ -85,10 +85,10 @@ function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId }: A
     return (
         <div
             ref={autocompleteRef} 
-            className="relative bg-gray-300 flex flex-col min-w-[100px] w-3/4 max-w-[600px] rounded-sm px-10 py-10"
+            className="relative bg-gray-700 flex flex-col min-w-[100px] w-3/4 max-w-[600px] rounded-sm px-10 py-10"
         >
-            <h2 className="pb-5">Choose options:</h2>
-            <div>
+            <h2 className="pb-5 text-white">Choose options:</h2>
+            <div className="w-full min-h-15 bg-gray-600 flex gap-2 flex-wrap items-center">
                 {selectedSuggestions.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-2">
                         {selectedSuggestions.map((suggestion) => (
@@ -105,10 +105,8 @@ function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId }: A
                     placeholder="Write here"
                     onFocus={handleInputFocus} 
                     onChange={handleInputChange} 
-                    className="bg-white rounded-sm w-full mb-2 px-5 py-2"
+                    className="rounded-sm flex grow px-5 py-2"
                 />
-                {filteredSuggestions.length === 0 && 
-                <button className="w-30 h-10 bg-yellow-950 text-white hover:bg-orange-100 hover:text-black rounded-sm">Add option</button>}
             </div>
             {isDropdownOpen && (
               <SuggestionsDropdown 

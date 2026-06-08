@@ -8,8 +8,8 @@ type ChosenTileProps = {
 
 function ChosenTile({textTile, onRemove}: ChosenTileProps) {
     return (
-        <div>
-            <button onClick={onRemove}>
+        <div className="flex flex-row gap-2 bg-orange-300 rounded-md px-4 py-2">
+            <button onClick={onRemove} className="cursor-pointer">
                 <FontAwesomeIcon icon={faXmark} />
             </button>
             <p>{textTile}</p>
