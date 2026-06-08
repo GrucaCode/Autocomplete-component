@@ -6,12 +6,14 @@ type AutocompleteProps<T> = {
     suggestions: T[];
     getSuggestionLabel: (suggestion: T) => string;
     getSuggestionId: (suggestion: T) => string;
+    createSuggestion?: (query: string) => T;
 };
 
-function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId }: AutocompleteProps<T>) {
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [query, setQuery] = useState("");
+function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId, createSuggestion }: AutocompleteProps<T>) {
+    const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+    const [query, setQuery] = useState<string>("");
     const [selectedSuggestions, setSelectedSuggestions] = useState<T[]>([]);
+    const [customSuggestions, setCustomSuggestions] = useState<T[]>([]);
 
     const autocompleteRef = useRef < HTMLDivElement | null > (null);
 
@@ -42,9 +44,74 @@ function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId }: A
       setIsDropdownOpen(true);
     }
 
+    const allSuggestions = [...suggestions, ...customSuggestions]
+
     const selectedSuggestionIds = selectedSuggestions.map((suggestion) => 
         getSuggestionId(suggestion)
     );
+
+    const cleanedQuery = query.trim().toLowerCase();
+
+    const isQueryAlreadyInSuggestions = allSuggestions.some(
+        (suggestion) => 
+            getSuggestionLabel(suggestion).toLowerCase() === cleanedQuery
+    )
+
+    const isQueryAlreadySelected = selectedSuggestions.some(
+        (suggestion) => 
+            getSuggestionLabel(suggestion).toLowerCase() === cleanedQuery
+    )
+
+    const filteredSuggestions =
+      cleanedQuery === ""
+        ? allSuggestions
+        : allSuggestions.filter((suggestion) =>
+        getSuggestionLabel(suggestion)
+          .toLowerCase()
+          .includes(cleanedQuery)
+    );
+
+    const canCreateSuggestion = 
+        Boolean(createSuggestion) &&
+        cleanedQuery !== "" &&
+        filteredSuggestions.length === 0 &&
+        !isQueryAlreadyInSuggestions &&
+        !isQueryAlreadySelected;
+
+    const handleCreateSuggestion = () => {
+        if (!createSuggestion || !canCreateSuggestion) {
+            return;
+        }
+
+        const newSuggestion = createSuggestion(query.trim());
+        const newSuggestionId = getSuggestionId(newSuggestion);
+
+        const isAlreadySelected = selectedSuggestions.some(
+            (suggestion) => getSuggestionId(suggestion) === newSuggestionId
+        )
+
+        const alreadyExistsInSuggestions = allSuggestions.some(
+            (suggestion) => getSuggestionId(suggestion) === newSuggestionId
+        )
+
+        if(!alreadyExistsInSuggestions) {
+            setCustomSuggestions((previousCustomSuggestions) => [
+                ...previousCustomSuggestions,
+                newSuggestion
+            ]);
+        }
+
+        if(!isAlreadySelected) {
+            setSelectedSuggestions((previousSelectedSuggestions) => [
+                ...previousSelectedSuggestions,
+                newSuggestion
+            ])
+        }
+
+        setQuery("");
+        setIsDropdownOpen(false);
+        
+    }
 
     const handleSelect = (suggestion: T) => {
         const suggestionId = getSuggestionId(suggestion);
@@ -73,26 +140,18 @@ function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId }: A
         );
     };
 
-    const filteredSuggestions =
-      query === ""
-        ? suggestions
-        : suggestions.filter((suggestion) =>
-        getSuggestionLabel(suggestion)
-          .toLowerCase()
-          .includes(query.toLowerCase())
-    );
-
     return (
         <div
             ref={autocompleteRef} 
-            className="relative bg-gray-700 flex flex-col min-w-[100px] w-3/4 max-w-[600px] rounded-sm px-10 py-10"
+            className="relative bg-gray-700 flex flex-col min-w-[100px] w-3/4 max-w-[600px] rounded-sm px-10 py-10 shadow-2xl font-montserrat"
         >
-            <h2 className="pb-5 text-white">Choose options:</h2>
-            <div className="w-full min-h-15 bg-gray-600 flex gap-2 flex-wrap items-center">
+            <h2 className="pb-5 text-white font-bold text-2xl">Choose options:</h2>
+            <div className="w-full bg-gray-600 flex gap-2 flex-wrap items-center rounded-t-sm">
                 {selectedSuggestions.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-2">
+                    <div className="flex flex-wrap">
                         {selectedSuggestions.map((suggestion) => (
                             <ChosenTile
+                                key={getSuggestionId(suggestion)}
                                 textTile={getSuggestionLabel(suggestion)}
                                 onRemove={() => handleRemove(suggestion)}
                             />
@@ -105,8 +164,17 @@ function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId }: A
                     placeholder="Write here"
                     onFocus={handleInputFocus} 
                     onChange={handleInputChange} 
-                    className="rounded-sm flex grow px-5 py-2"
+                    className="flex grow px-5 py-4 placeholder-gray-300 text-white"
                 />
+                {canCreateSuggestion && (
+                    <button
+                        type="button"
+                        onClick={handleCreateSuggestion}
+                        className="text-black rounded-md bg-green-700 py-2 px-5 mr-2"
+                    >
+                        ADD
+                    </button>
+                )}
             </div>
             {isDropdownOpen && (
               <SuggestionsDropdown 

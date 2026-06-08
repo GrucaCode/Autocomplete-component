@@ -18,6 +18,7 @@ function App() {
           suggestions={technologies}
           getSuggestionLabel={(suggestion) => suggestion}
           getSuggestionId={(suggestion) => suggestion}
+          createSuggestion={(query)=> query}
         />
     </main>
   )
