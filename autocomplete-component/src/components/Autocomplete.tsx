@@ -10,12 +10,13 @@ type AutocompleteProps<T> = {
 };
 
 function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId, createSuggestion }: AutocompleteProps<T>) {
-    const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-    const [query, setQuery] = useState<string>("");
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [query, setQuery] = useState("");
     const [selectedSuggestions, setSelectedSuggestions] = useState<T[]>([]);
     const [customSuggestions, setCustomSuggestions] = useState<T[]>([]);
+    const [currentSuggestionIndex, setCurrentSuggestionIndex] = useState<number | null>(null);
 
-    const autocompleteRef = useRef < HTMLDivElement | null > (null);
+    const autocompleteRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         const handleOutsideInputClick = (event: MouseEvent) => {
@@ -42,6 +43,7 @@ function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId, cre
       const value = event.target.value;
       setQuery(value);
       setIsDropdownOpen(true);
+      setCurrentSuggestionIndex(null);
     }
 
     const allSuggestions = [...suggestions, ...customSuggestions]
@@ -70,6 +72,58 @@ function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId, cre
           .toLowerCase()
           .includes(cleanedQuery)
     );
+
+    const activeSuggestions = filteredSuggestions.filter((suggestion) => {
+        const suggestionId = getSuggestionId(suggestion);
+
+        return !selectedSuggestionIds.includes(suggestionId);
+    });
+
+    const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if(activeSuggestions.length === 0) {
+            return;
+        }
+
+        if (event.key === "ArrowDown") {
+            event.preventDefault();
+
+            setCurrentSuggestionIndex((previousIndex) => {
+                if (previousIndex === null) {
+                    return 0;
+                }
+
+                return previousIndex === activeSuggestions.length - 1
+                    ? 0
+                    : previousIndex + 1;
+            });
+
+            return;
+        }
+        
+        if (event.key === "ArrowUp") {
+        event.preventDefault();
+
+            if (activeSuggestions.length === 0) {
+                return;
+            }
+
+            setCurrentSuggestionIndex((previousIndex) => {
+                if (previousIndex === null) {
+                return activeSuggestions.length - 1;
+                }
+
+                return previousIndex === 0
+                ? activeSuggestions.length - 1
+                : previousIndex - 1;
+            });
+
+            return;
+        }
+
+        if(event.key === "Escape") {
+            setIsDropdownOpen(false);
+        }
+    }
 
     const canCreateSuggestion = 
         Boolean(createSuggestion) &&
@@ -110,6 +164,7 @@ function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId, cre
 
         setQuery("");
         setIsDropdownOpen(false);
+        setCurrentSuggestionIndex(null);
         
     }
 
@@ -128,6 +183,7 @@ function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId, cre
 
         setQuery("");
         setIsDropdownOpen(false);
+        setCurrentSuggestionIndex(null);
     }
 
     const handleRemove = (suggestion: T) => {
@@ -164,6 +220,7 @@ function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId, cre
                     placeholder="Write here"
                     onFocus={handleInputFocus} 
                     onChange={handleInputChange} 
+                    onKeyDown={handleInputKeyDown}
                     className="flex grow px-5 py-4 placeholder-gray-300 text-white"
                 />
                 {canCreateSuggestion && (
@@ -183,6 +240,11 @@ function Autocomplete<T>({ suggestions, getSuggestionLabel, getSuggestionId, cre
                 getSuggestionId={getSuggestionId}
                 selectedSuggestionIds={selectedSuggestionIds}
                 onSelect={handleSelect}
+                currentSuggestionId={
+                    currentSuggestionIndex !== null && activeSuggestions[currentSuggestionIndex]
+                        ? getSuggestionId(activeSuggestions[currentSuggestionIndex])
+                        : null
+                }
               />
             )}
         </div>
